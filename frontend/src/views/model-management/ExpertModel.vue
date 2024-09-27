@@ -2,7 +2,7 @@
 import { ref, reactive, watch, onMounted, onBeforeUnmount } from "vue";
 import {
   getExpertModelInfo,
-  getExpertModelDetailByDevice,
+  getExpertModelDetailByKey,
 } from "@/api/expertModel";
 import { ElNotification, ElMessage } from "element-plus";
 import {
@@ -56,12 +56,12 @@ const setData = async () => {
   });
 };
 
-const handleViewModelReport = async (device) => {
-  const res = await getExpertModelDetailByDevice(device);
+const handleViewModelReport = async (key) => {
+  const res = await getExpertModelDetailByKey(key);
   console.log(res);
   if (res.code === 200) {
     modelReportDialogData.report_path =
-      "/minio-api/power-prophet/" + res.data.report_path;
+      "/minio-api/power-prophet/" + res.data[0].report_path;
     console.log(modelReportDialogData.report_path);
     modelReportDialogVisible.value = true;
   }
@@ -123,6 +123,7 @@ onBeforeUnmount(() => {
     style="width: 100%"
     :row-class-name="tableRowClassName"
   >
+    <el-table-column v-if="false" prop="key" label="编号" align="center" sortable />
     <el-table-column prop="device" label="设备" align="center" sortable />
     <el-table-column
       prop="model_name"
@@ -145,7 +146,7 @@ onBeforeUnmount(() => {
     />
     <el-table-column label="操作" align="center" width="160">
       <template #default="scope">
-        <el-button @click="handleViewModelReport(scope.row.device)"
+        <el-button @click="handleViewModelReport(scope.row.key)"
           >模型报告</el-button
         >
       </template>

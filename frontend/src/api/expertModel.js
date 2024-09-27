@@ -14,9 +14,9 @@ export function getExpertModelInfo(include, exclude = null) {
   });
 }
 
-export function getExpertModelDetailByDevice(device) {
+export function getExpertModelDetailByKey(key) {
   const params = {
-    device: device,
+    key: key,
   };
 
   return axios.post("/model/detail", params, {
