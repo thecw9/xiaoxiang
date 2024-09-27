@@ -89,7 +89,7 @@ onBeforeUnmount(() => {
   </div>
   <!-- 数据展示 -->
   <DataTable
-    :title="`${form.device}油色谱在线监测评估`"
+    :title="`${form.device}铁芯夹件在线监测评估`"
     :data="data"
     @set-data="setData"
   />
