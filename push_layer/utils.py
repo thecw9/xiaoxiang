@@ -28,19 +28,20 @@ def get_key_info_by_keywords(include: list[str], exclude: list[str] = []) -> lis
     FROM analog
     {where_clause}
     """
-    results = db.execute(text(statement)).fetchall()
-    results = [r._asdict() for r in results]
-    results = [
-        {
-            # "key": i.get("scadaid"),
-            "key": i.get("id"),
-            "unit": i.get("unitsymbol"),
-            "name": i.get("name"),
-            "path": i.get("path"),
-            "quality": int(i.get("quality") or 0),
-        }
-        for i in results
-    ]
+
+    with db.begin():  # Use a context manager for the transaction
+        results = db.execute(text(statement)).fetchall()
+        results = [r._asdict() for r in results]
+        results = [
+            {
+                "key": i.get("id"),
+                "unit": i.get("unitsymbol"),
+                "name": i.get("name"),
+                "path": i.get("path"),
+                "quality": int(i.get("quality") or 0),
+            }
+            for i in results
+        ]
     return results
 
 
