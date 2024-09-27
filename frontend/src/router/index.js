@@ -102,25 +102,25 @@ const routes = [
       //   meta: { title: "训练日志", icon: "menu" },
       //   component: () => import("@/views/train_logs/index.vue"),
       // },
-      {
-        path: "/comparison-monitor",
-        name: "comparison-monitor",
-        meta: { title: "趋势分析", icon: "menu" },
-        children: [
-          {
-            path: "/comparison-monitor/horizontal-comparison",
-            name: "horizontal-comparison",
-            meta: { title: "横向趋势", icon: "menu" },
-            component: () => import("@/views/horizontal-comparison/index.vue"),
-          },
-          {
-            path: "/comparison-monitor/vertical-comparison",
-            name: "vertical-comparison",
-            meta: { title: "纵向趋势", icon: "menu" },
-            component: () => import("@/views/vertical-comparison/index.vue"),
-          },
-        ],
-      },
+      // {
+      //   path: "/comparison-monitor",
+      //   name: "comparison-monitor",
+      //   meta: { title: "趋势分析", icon: "menu" },
+      //   children: [
+      //     {
+      //       path: "/comparison-monitor/horizontal-comparison",
+      //       name: "horizontal-comparison",
+      //       meta: { title: "横向趋势", icon: "menu" },
+      //       component: () => import("@/views/horizontal-comparison/index.vue"),
+      //     },
+      //     {
+      //       path: "/comparison-monitor/vertical-comparison",
+      //       name: "vertical-comparison",
+      //       meta: { title: "纵向趋势", icon: "menu" },
+      //       component: () => import("@/views/vertical-comparison/index.vue"),
+      //     },
+      //   ],
+      // },
       // {
       //   path: "/monitor/video",
       //   name: "video",
