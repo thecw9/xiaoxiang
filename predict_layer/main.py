@@ -42,7 +42,7 @@ scheduler.add_job(
 scheduler.add_job(
     train_single_measure,
     IntervalTrigger(days=10),
-    misfire_grace_time=6000,  # 允许任务延迟最多 600 秒后仍然执行
+    misfire_grace_time=60*60*2,  # 允许任务延迟最多 2 小时后仍然执行
 )
 
 
