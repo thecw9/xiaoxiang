@@ -884,7 +884,7 @@ def init():
     init_pd_c2h2_models()
     init_gas_c2h2_models()
     init_c2h2_stepwise_increase_models()
-    init_parallel_comparison_models()
+    # init_parallel_comparison_models()
 
 
 if __name__ == "__main__":
