@@ -75,13 +75,13 @@ async def get_model_info(model_query_param: ModelQueryParam = Body(...)):
 
 
 class ModelDetailParam(BaseModel):
-    device: str
+    key: str
 
 
 @app.post("/model/detail")
 async def get_model_detail(params: ModelDetailParam):
-    device = params.device
-    query = {"device": device}
+    key = params.key
+    query = {"key": key}
 
     model_info = model_info_collection.find(query)
     model_info = [{**item, "_id": str(item["_id"])} for item in model_info]
