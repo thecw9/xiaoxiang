@@ -1,3 +1,4 @@
+import os
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
@@ -6,6 +7,7 @@ from sqlalchemy import text
 from database import engine
 
 db = Session(engine)
+ENVIRONMENT = os.environ["ENVIRONMENT"]
 
 
 def get_key_info_by_keywords(include: list[str], exclude: list[str] = []) -> list[dict]:
@@ -44,43 +46,43 @@ def get_key_info_by_keywords(include: list[str], exclude: list[str] = []) -> lis
     return results
 
 
-# def fetch_realtime_data(keys: list[str]):
-#     url = "http://192.168.4.117/v1/cs/realdata-service/data/realtime"
-#     headers = {
-#         "X-HW-ID": "your-hw-id",  # Replace with your actual X-HW-ID
-#         "X-HW-APPKEY": "your-app-key",  # Replace with your actual X-HW-APPKEY
-#         "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
-#         "Content-Type": "application/json",
-#         "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6enciLCJ2ZXIiOiJKV1QxLjAiLCJvYmpfaWQiOm51bGwsImxhc3RfbG9naW4iOjAsInByaSI6W10sInNjb3BlIjpbImFsbCJdLCJpc3MiOiJ4aWFveGlhbmdAbnJlYyIsImV4cCI6MTcwMzU3ODQwODcxNywianRpIjoiOWY1YzMxZjMtYTNmMy00ZmU0LWFmNmMtN2E1ZDBlODVjZjllIiwiYWNjb3VudCI6bnVsbCwiY2xpZW50X2lkIjoienp3In0.gYiNX8IQ0nLP4P8XUl5JwFMFAlsR79EooCjf0MXR0z3ZrGZZ2Ohg8M_VmfkBp0mxTUSlHvJaQIm8ElQY4B7q0PLhHSr5i1Zj0ewLytR6hfsBxn01FqcgxOWgdCF5Tnc7cwa2DZPlIt1E0SIHlJGlKsBHTFfHB5ZmcnDZgaOvEz4",  # Replace with your actual token
-#     }
-#
-#     values = []
-#     for i in range(0, len(keys), 1000):
-#         keys_chunk = keys[i : i + 1000]
-#         payload = {
-#             "id": 1,
-#             "clientId": "serv-x01",
-#             "body": {"datatype": "analog", "keys": keys_chunk},
-#         }
-#         response = requests.post(url, headers=headers, json=payload, verify=False)
-#         json_resp = response.json()
-#         values += json_resp["body"]["values"]
-#     values = [
-#         {
-#             "key": str(v["key"]),
-#             "value": v["value"],
-#             "time": v["time_stamp"].replace(" ", "T"),
-#             "fresh_time": v["fresh_time"].replace(" ", "T"),
-#         }
-#         for v in values
-#     ]
-#     return values
+def fetch_realtime_data_from_api(keys: list[str]):
+    url = "http://192.168.4.117/v1/cs/realdata-service/data/realtime"
+    headers = {
+        "X-HW-ID": "your-hw-id",  # Replace with your actual X-HW-ID
+        "X-HW-APPKEY": "your-app-key",  # Replace with your actual X-HW-APPKEY
+        "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6enciLCJ2ZXIiOiJKV1QxLjAiLCJvYmpfaWQiOm51bGwsImxhc3RfbG9naW4iOjAsInByaSI6W10sInNjb3BlIjpbImFsbCJdLCJpc3MiOiJ4aWFveGlhbmdAbnJlYyIsImV4cCI6MTcwMzU3ODQwODcxNywianRpIjoiOWY1YzMxZjMtYTNmMy00ZmU0LWFmNmMtN2E1ZDBlODVjZjllIiwiYWNjb3VudCI6bnVsbCwiY2xpZW50X2lkIjoienp3In0.gYiNX8IQ0nLP4P8XUl5JwFMFAlsR79EooCjf0MXR0z3ZrGZZ2Ohg8M_VmfkBp0mxTUSlHvJaQIm8ElQY4B7q0PLhHSr5i1Zj0ewLytR6hfsBxn01FqcgxOWgdCF5Tnc7cwa2DZPlIt1E0SIHlJGlKsBHTFfHB5ZmcnDZgaOvEz4",  # Replace with your actual token
+    }
+
+    values = []
+    for i in range(0, len(keys), 1000):
+        keys_chunk = keys[i : i + 1000]
+        payload = {
+            "id": 1,
+            "clientId": "serv-x01",
+            "body": {"datatype": "analog", "keys": keys_chunk},
+        }
+        response = requests.post(url, headers=headers, json=payload, verify=False)
+        json_resp = response.json()
+        values += json_resp["body"]["values"]
+    values = [
+        {
+            "key": str(v["key"]),
+            "value": v["value"],
+            "time": v["time_stamp"].replace(" ", "T"),
+            "fresh_time": v["fresh_time"].replace(" ", "T"),
+        }
+        for v in values
+    ]
+    return values
 
 
 current_data_index = {}
 
 
-def fetch_realtime_data(keys: list[str]):
+def fetch_realtime_data_mock(keys: list[str]):
     # all tables start with "scada_analogueother" in the database
     statement = """
     SELECT table_name
@@ -132,6 +134,11 @@ def fetch_realtime_data(keys: list[str]):
 
     return results
 
+def fetch_realtime_data(keys: list[str]):
+    if ENVIRONMENT == "production":
+        return fetch_realtime_data_from_api(keys)
+    else:
+        return fetch_realtime_data_mock(keys)
 
 def merge_data(arr1: list[dict], arr2: list[dict], key: str = "key") -> list[dict]:
     df1 = pd.DataFrame(arr1)
