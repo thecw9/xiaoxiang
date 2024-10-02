@@ -7,8 +7,8 @@ ENV TZ=Asia/Shanghai
 COPY ./requirements.txt /app/requirements.txt
 
 # Install dependencies
-# RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the main application
 COPY . .
