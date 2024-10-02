@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from database import engine
+from config import engine
 
 db = Session(engine)
 ENVIRONMENT = os.environ["ENVIRONMENT"]
