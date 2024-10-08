@@ -1,5 +1,4 @@
 <script setup>
-import { getExpertModelDetailByDevice } from "@/api/expertModel";
 import { ref, reactive } from "vue";
 import { tableRowClassName, formatText } from "@/utils";
 import { ElNotification, ElMessage } from "element-plus";
