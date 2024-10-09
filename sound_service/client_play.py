@@ -5,7 +5,7 @@ import sounddevice as sd
 import json
 
 # 网络参数设置
-HOST = '10.126.233.202'  # 请替换为服务器的实际 IP 地址
+HOST = '10.159.120.136'  # 请替换为服务器的实际 IP 地址
 PORT = 50007
 
 # 创建 TCP 客户端套接字并连接到服务器
