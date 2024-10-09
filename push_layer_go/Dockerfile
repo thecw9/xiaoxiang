@@ -19,11 +19,12 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o your_project .
 
 # 第二阶段：运行阶段
-FROM alpine:latest
+FROM golang:1.23.2
 
-# 设置时区（可选）
-# RUN apk add --no-cache tzdata
-# ENV TZ=Asia/Shanghai
+
+# 设置时区为 Asia/Shanghai
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 将可执行文件从构建阶段复制到运行阶段
 COPY --from=builder /app/your_project /app/your_project
