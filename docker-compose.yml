@@ -23,16 +23,16 @@ services:
     volumes:
       - ./data_service:/app
 
-  # push_layer:
+  # push_layer_python:
   #   build:
-  #     context: ./push_layer
+  #     context: ./push_layer_python
   #     dockerfile: Dockerfile
-  #   image: csust/push_layer:${VERSION}
+  #   image: csust/push_layer_python:${VERSION}
   #   env_file:
   #     - ${ENV_FILE}
   #   network_mode: host
   #   volumes:
-  #     - ./push_layer:/app
+  #     - ./push_layer_python:/app
 
   push_layer_go:
     build:
@@ -42,8 +42,6 @@ services:
     env_file:
       - ${ENV_FILE}
     network_mode: host
-    volumes:
-      - ./push_layer_go:/app
 
   ingestion_layer:
     build:

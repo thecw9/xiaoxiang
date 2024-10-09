@@ -1,7 +1,6 @@
 # 第一阶段：构建阶段
 FROM golang:1.23.2 AS builder
 
-# 为了加速构建过程，设置GOPROXY
 ENV GOPROXY=https://goproxy.cn,direct
 
 # 设置工作目录
@@ -39,5 +38,5 @@ WORKDIR /app
 # ENV ENVIRONMENT=production
 
 # 运行可执行文件
-ENTRYPOINT ["./your_project"]
+CMD ["./your_project"]
 
