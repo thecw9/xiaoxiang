@@ -103,8 +103,8 @@ const props = defineProps({
 const handleTrain = async (key) => {
   const res = await trainSingleModel(
     key,
-    trainDataTimeRange.value[0],
-    trainDataTimeRange.value[1],
+    formatDate(trainDataTimeRange.value[0]),
+    formatDate(trainDataTimeRange.value[1]),
   );
   if (res.code === 200) {
     ElNotification({
@@ -186,12 +186,12 @@ const setHistoryData = async () => {
           Math.min(...historyData.map((item) => item.value)) -
           (Math.max(...historyData.map((item) => item.value)) -
             Math.min(...historyData.map((item) => item.value))) *
-            0.2,
+          0.2,
         max:
           Math.max(...historyData.map((item) => item.value)) +
           (Math.max(...historyData.map((item) => item.value)) -
             Math.min(...historyData.map((item) => item.value))) *
-            0.2,
+          0.2,
         splitLine: {
           show: false,
         },
@@ -221,68 +221,36 @@ const handleViewModelReport = async (key) => {
 <template>
   <div>
     <h1>{{ props.title }}</h1>
-    <el-table
-      :data="props.data"
-      border
-      style="width: 100%"
-      :row-class-name="tableRowClassName"
-    >
+    <el-table :data="props.data" border style="width: 100%" :row-class-name="tableRowClassName">
       <el-table-column prop="key" label="测点编号" align="center" width="170" />
       <el-table-column prop="path" label="测点" align="center" />
       <el-table-column prop="time" label="时间" align="center" width="180" />
       <el-table-column prop="value" label="值" align="center" width="120" />
       <el-table-column prop="unit" label="单位" align="center" width="80" />
       <el-table-column prop="status" label="状态" align="center" width="110" />
-      <el-table-column
-        prop="message"
-        label="诊断信息"
-        align="center"
-        width="180"
-      >
+      <el-table-column prop="message" label="诊断信息" align="center" width="180">
         <template #default="{ row }">
           <div v-html="formatText(row.message)"></div>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="320">
         <template #default="scope">
-          <el-button type="danger" @click="handleTrain(scope.row.key)"
-            >训练模型</el-button
-          >
-          <el-button @click="handleViewModelReport(scope.row.key)"
-            >模型报告</el-button
-          >
-          <el-button @click="handleViewHistoryDataDrawer(scope.row.key)"
-            >历史数据</el-button
-          >
+          <el-button type="danger" @click="handleTrain(scope.row.key)">训练模型</el-button>
+          <el-button @click="handleViewModelReport(scope.row.key)">模型报告</el-button>
+          <el-button @click="handleViewHistoryDataDrawer(scope.row.key)">历史数据</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 历史数据抽屉 -->
-    <el-drawer
-      v-model="historyDataDrawerVisible"
-      title="历史数据"
-      size="40%"
-      @open="handleOpenHistoryDataDrawer"
-      @closed="handleCloseHistoryDataDrawer"
-    >
-      <el-date-picker
-        v-model="historyDataTimeRange"
-        type="datetimerange"
-        :shortcuts="shortcuts"
-        range-separator="To"
-        start-placeholder="Start date"
-        end-placeholder="End date"
-      />
+    <el-drawer v-model="historyDataDrawerVisible" title="历史数据" size="40%" @open="handleOpenHistoryDataDrawer"
+      @closed="handleCloseHistoryDataDrawer">
+      <el-date-picker v-model="historyDataTimeRange" type="datetimerange" :shortcuts="shortcuts" range-separator="To"
+        start-placeholder="Start date" end-placeholder="End date" />
       <el-button @click="setHistoryData">查询</el-button>
       <el-divider></el-divider>
       <div ref="historyDataChart" style="width: 100%; height: 300px"></div>
-      <el-table
-        :data="historyDataDrawerData.data"
-        border
-        style="width: 100%"
-        height="650"
-      >
+      <el-table :data="historyDataDrawerData.data" border style="width: 100%" height="650">
         <el-table-column prop="fresh_time" label="刷新时间" align="center" />
         <el-table-column prop="time" label="时间" align="center" />
         <el-table-column prop="value" label="值" align="center" />
@@ -290,18 +258,8 @@ const handleViewModelReport = async (key) => {
     </el-drawer>
 
     <!-- 模型报告弹窗 -->
-    <el-dialog
-      v-model="modelReportDialogVisible"
-      modal="false"
-      width="80%"
-      align-center="true"
-      show-close="false"
-    >
-      <iframe
-        :src="modelReportDialogData.report_path"
-        width="100%"
-        height="800"
-      ></iframe>
+    <el-dialog v-model="modelReportDialogVisible" modal="false" width="80%" align-center="true" show-close="false">
+      <iframe :src="modelReportDialogData.report_path" width="100%" height="800"></iframe>
     </el-dialog>
   </div>
 </template>

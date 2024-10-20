@@ -29,6 +29,12 @@ const routes = [
         component: () => import("@/views/oil-chromatography/index.vue"),
       },
       {
+        path: "/monitor/sound",
+        name: "sound",
+        meta: { title: "声纹监测评估", icon: "menu" },
+        component: () => import("@/views/sound/index.vue"),
+      },
+      {
         path: "/monitor/part-discharge",
         name: "part-discharge",
         meta: { title: "局放监测评估", icon: "menu" },

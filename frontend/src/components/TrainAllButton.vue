@@ -3,6 +3,9 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { trainSingleModel } from "@/api/singleModel";
 import { ElNotification, ElMessage } from "element-plus";
+import {
+  formatDate,
+} from "@/utils";
 
 const emit = defineEmits(["setData"]);
 
@@ -82,8 +85,8 @@ const handleTrainAll = async () => {
   props.data.forEach(async (item) => {
     const res = await trainSingleModel(
       item.key,
-      trainDataTimeRange.value[0],
-      trainDataTimeRange.value[1],
+      formatDate(trainDataTimeRange.value[0]),
+      formatDate(trainDataTimeRange.value[1]),
     );
     if (res.code !== 200) {
       error_train_key.push(item.key);
@@ -110,22 +113,12 @@ const handleTrainAll = async () => {
 
   <!-- 全部训练弹窗 -->
   <el-dialog v-model="dialogVisible" title="训练模型" width="50%">
-    <span style="margin-bottom: 10px; font-size: 18px"
-      >选择训练数据时间范围：</span
-    >
-    <el-date-picker
-      v-model="trainDataTimeRange"
-      type="datetimerange"
-      :shortcuts="shortcuts"
-      range-separator="To"
-      start-placeholder="Start date"
-      end-placeholder="End date"
-    />
+    <span style="margin-bottom: 10px; font-size: 18px">选择训练数据时间范围：</span>
+    <el-date-picker v-model="trainDataTimeRange" type="datetimerange" :shortcuts="shortcuts" range-separator="To"
+      start-placeholder="Start date" end-placeholder="End date" />
     <template #footer>
       <span class="dialog-footer">
-        <el-button class="cancel-btn" @click="dialogVisible = false"
-          >取消</el-button
-        >
+        <el-button class="cancel-btn" @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="handleTrainAll">确认训练</el-button>
       </span>
     </template>

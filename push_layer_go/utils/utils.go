@@ -243,46 +243,47 @@ func FetchRealTimeDataMock(db *sql.DB, keys []string) ([]RealTimeData, error) {
 		currentIndex := currentDataIndex[key]
 		currentDataIndexMutex.Unlock()
 
-        // 构建数据查询，明确指定需要的列，并将 attr_oid 转换为文本类型
-        unionDataQueries := []string{}
-        for _, table := range tablesExistData {
-            unionDataQueries = append(unionDataQueries, fmt.Sprintf("SELECT attr_oid::text, fvalue, attr_time FROM %s WHERE attr_oid = %s", table, key))
-        }
-        dataQuery := strings.Join(unionDataQueries, " UNION ALL ") + fmt.Sprintf(" ORDER BY attr_time LIMIT 1 OFFSET %d", currentIndex)
+		// 构建数据查询，明确指定需要的列，并将 attr_oid 转换为文本类型
+		unionDataQueries := []string{}
+		for _, table := range tablesExistData {
+			unionDataQueries = append(unionDataQueries, fmt.Sprintf("SELECT attr_oid::text, fvalue, attr_time FROM %s WHERE attr_oid = %s", table, key))
+		}
+		dataQuery := strings.Join(unionDataQueries, " UNION ALL ") + fmt.Sprintf(" ORDER BY attr_time LIMIT 1 OFFSET %d", currentIndex)
 
-        dataRows, err := db.Query(dataQuery)
-        if err != nil {
-            return nil, err
-        }
+		dataRows, err := db.Query(dataQuery)
+		if err != nil {
+			return nil, err
+		}
 
-        if dataRows.Next() {
-            var attr_oid sql.NullString
-            var fvalue float64
-            var attr_time time.Time
+		if dataRows.Next() {
+			var attr_oid sql.NullString
+			var fvalue float64
+			var attr_time time.Time
 
-            // 扫描查询结果的三列
-            err = dataRows.Scan(&attr_oid, &fvalue, &attr_time)
-            if err != nil {
-                return nil, err
-            }
+			// 扫描查询结果的三列
+			err = dataRows.Scan(&attr_oid, &fvalue, &attr_time)
+			if err != nil {
+				return nil, err
+			}
 
-            // 检查 attr_oid 是否为有效值
-            if !attr_oid.Valid {
-                return nil, fmt.Errorf("attr_oid is null")
-            }
+			// 检查 attr_oid 是否为有效值
+			if !attr_oid.Valid {
+				return nil, fmt.Errorf("attr_oid is null")
+			}
 
-            dataRow := RealTimeData{
-                Key:       attr_oid.String,
-                Value:     fvalue,
-                Time:      time.Now().Add(-6 * 24 * time.Hour).Format(time.RFC3339),
-                FreshTime: attr_time.Format(time.RFC3339),
-            }
-            results = append(results, dataRow)
-        }
-        dataRows.Close()
-    }
+			dataRow := RealTimeData{
+				Key:   attr_oid.String,
+				Value: fvalue,
+				Time:  time.Now().Format(time.RFC3339),
+				// Time:      time.Now().Add(-6 * 24 * time.Hour).Format(time.RFC3339),
+				FreshTime: attr_time.Format(time.RFC3339),
+			}
+			results = append(results, dataRow)
+		}
+		dataRows.Close()
+	}
 
-    return results, nil
+	return results, nil
 
 }
 

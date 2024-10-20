@@ -125,8 +125,8 @@ def fetch_realtime_data_mock(keys: list[str]):
         {
             "key": str(i.get("attr_oid")),
             "value": i.get("fvalue"),
-            # "time": datetime.now().isoformat(),
-            "time": (datetime.now() - timedelta(days=6)).isoformat(),
+            "time": datetime.now().isoformat(),
+            # "time": (datetime.now() - timedelta(days=6)).isoformat(),
             "fresh_time": i.get("attr_time").isoformat(),
         }
         for i in results
